@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    helm.sh/hook: test-success
+  labels:
+    app: metrics-server
+    chart: metrics-server-2.11.1
+    heritage: Tiller
+    release: metrics-server
+  name: metrics-server-test
+spec:
+  containers:
+    - args:
+        - -c
+        - wget -qO- https://metrics-server:443/version | grep -F v0.3.2
+      command:
+        - /bin/sh
+      image: busybox
+      name: wget
+  restartPolicy: Never

@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: metrics-server
+    chart: metrics-server-2.11.1
+    heritage: Tiller
+    release: metrics-server
+  name: metrics-server
+  namespace: syn-metrics-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: metrics-server
+      release: metrics-server
+  template:
+    metadata:
+      labels:
+        app: metrics-server
+        release: metrics-server
+    spec:
+      affinity: {}
+      containers:
+      - command:
+        - /metrics-server
+        - --cert-dir=/tmp
+        - --logtostderr
+        - --secure-port=8443
+        image: k8s.gcr.io/metrics-server-amd64:v0.3.2
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: https
+            scheme: HTTPS
+          initialDelaySeconds: 20
+        name: metrics-server
+        ports:
+        - containerPort: 8443
+          name: https
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: https
+            scheme: HTTPS
+          initialDelaySeconds: 20
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - all
+          readOnlyRootFilesystem: true
+          runAsGroup: 10001
+          runAsNonRoot: true
+          runAsUser: 10001
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp
+      nodeSelector: {}
+      serviceAccountName: metrics-server
+      tolerations: []
+      volumes:
+      - emptyDir: {}
+        name: tmp
