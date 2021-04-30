@@ -16,6 +16,21 @@ spec:
       labels:
         app.kubernetes.io/name: argocd-repo-server
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: argocd-repo-server
+                topologyKey: kubernetes.io/hostname
+              weight: 100
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/part-of: argocd
+                topologyKey: kubernetes.io/hostname
+              weight: 5
       automountServiceAccountToken: false
       containers:
         - command:
@@ -26,17 +41,25 @@ spec:
           env:
             - name: HOME
               value: /home/argocd
-          image: docker.io/argoproj/argocd:v1.7.4@sha256:d8a356b76d8b1bd810c9381f88ec0ae8cc71ad0ec2e22910a47f5c56417a40d0
+          image: docker.io/argoproj/argocd:v1.8.7@sha256:ce34acd7bac34d5a4fdbf96faf11fa5e01a7f96a27041d4472ca498886000cbf
           imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz?full=true
+              port: 8084
+            initialDelaySeconds: 30
+            periodSeconds: 5
           name: argocd-repo-server
           ports:
             - containerPort: 8081
             - containerPort: 8084
           readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8084
             initialDelaySeconds: 5
             periodSeconds: 10
-            tcpSocket:
-              port: 8081
           volumeMounts:
             - mountPath: /app/config/ssh
               name: ssh-known-hosts
@@ -64,6 +87,8 @@ spec:
           imagePullPolicy: IfNotPresent
           name: vault-agent
           ports: []
+          securityContext:
+            runAsUser: 100
           stdin: false
           tty: false
           volumeMounts:
@@ -79,7 +104,7 @@ spec:
             - -v
             - /usr/local/bin/kapitan
             - /custom-tools/
-          image: docker.io/vshn/kapitan:v0.29.1@sha256:32440e6c1eecc7c02feeec3a842d370c99b884ff238f8795258146393de45e3f
+          image: docker.io/projectsyn/kapitan:v0.29.1@sha256:14f31adadb5d1a28fa097a98bb48bb5a2a0cc1fbaa6f3bcd915e8ba7cd016662
           imagePullPolicy: Always
           name: install-kapitan
           volumeMounts:

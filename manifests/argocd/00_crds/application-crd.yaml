@@ -6,6 +6,17 @@ metadata:
     app.kubernetes.io/part-of: argocd
   name: applications.argoproj.io
 spec:
+  additionalPrinterColumns:
+  - JSONPath: .status.sync.status
+    name: Sync Status
+    type: string
+  - JSONPath: .status.health.status
+    name: Health Status
+    type: string
+  - JSONPath: .status.sync.revision
+    name: Revision
+    priority: 10
+    type: string
   group: argoproj.io
   names:
     kind: Application
@@ -16,6 +27,7 @@ spec:
     - apps
     singular: application
   scope: Namespaced
+  subresources: {}
   validation:
     openAPIV3Schema:
       description: Application is a definition of Application resource.
@@ -119,6 +131,8 @@ spec:
                     directory:
                       description: Directory holds path/directory specific options
                       properties:
+                        exclude:
+                          type: string
                         jsonnet:
                           description: ApplicationSourceJsonnet holds jsonnet specific options
                           properties:
@@ -206,6 +220,9 @@ spec:
                         values:
                           description: Values is Helm values, typically defined as a block
                           type: string
+                        version:
+                          description: Version is the Helm version to use for templating with
+                          type: string
                       type: object
                     ksonnet:
                       description: Ksonnet holds ksonnet specific options
@@ -233,6 +250,11 @@ spec:
                     kustomize:
                       description: Kustomize holds kustomize specific options
                       properties:
+                        commonAnnotations:
+                          additionalProperties:
+                            type: string
+                          description: CommonAnnotations adds additional kustomize commonAnnotations
+                          type: object
                         commonLabels:
                           additionalProperties:
                             type: string
@@ -294,7 +316,7 @@ spec:
                   description: SyncStrategy describes how to perform the sync
                   properties:
                     apply:
-                      description: Apply wil perform a `kubectl apply` to perform the sync.
+                      description: Apply will perform a `kubectl apply` to perform the sync.
                       properties:
                         force:
                           description: Force indicates whether or not to supply the --force flag to `kubectl apply`. The --force flag deletes and re-create the resource, when PATCH encounters conflict and has retried for 5 times.
@@ -377,6 +399,8 @@ spec:
                 directory:
                   description: Directory holds path/directory specific options
                   properties:
+                    exclude:
+                      type: string
                     jsonnet:
                       description: ApplicationSourceJsonnet holds jsonnet specific options
                       properties:
@@ -464,6 +488,9 @@ spec:
                     values:
                       description: Values is Helm values, typically defined as a block
                       type: string
+                    version:
+                      description: Version is the Helm version to use for templating with
+                      type: string
                   type: object
                 ksonnet:
                   description: Ksonnet holds ksonnet specific options
@@ -491,6 +518,11 @@ spec:
                 kustomize:
                   description: Kustomize holds kustomize specific options
                   properties:
+                    commonAnnotations:
+                      additionalProperties:
+                        type: string
+                      description: CommonAnnotations adds additional kustomize commonAnnotations
+                      type: object
                     commonLabels:
                       additionalProperties:
                         type: string
@@ -549,6 +581,9 @@ spec:
                 automated:
                   description: Automated will keep an application synced to the target revision
                   properties:
+                    allowEmpty:
+                      description: 'AllowEmpty allows apps have zero live resources (default: false)'
+                      type: boolean
                     prune:
                       description: 'Prune will prune resources automatically as part of automated sync (default: false)'
                       type: boolean
@@ -648,6 +683,8 @@ spec:
                       directory:
                         description: Directory holds path/directory specific options
                         properties:
+                          exclude:
+                            type: string
                           jsonnet:
                             description: ApplicationSourceJsonnet holds jsonnet specific options
                             properties:
@@ -735,6 +772,9 @@ spec:
                           values:
                             description: Values is Helm values, typically defined as a block
                             type: string
+                          version:
+                            description: Version is the Helm version to use for templating with
+                            type: string
                         type: object
                       ksonnet:
                         description: Ksonnet holds ksonnet specific options
@@ -762,6 +802,11 @@ spec:
                       kustomize:
                         description: Kustomize holds kustomize specific options
                         properties:
+                          commonAnnotations:
+                            additionalProperties:
+                              type: string
+                            description: CommonAnnotations adds additional kustomize commonAnnotations
+                            type: object
                           commonLabels:
                             additionalProperties:
                               type: string
@@ -925,6 +970,8 @@ spec:
                             directory:
                               description: Directory holds path/directory specific options
                               properties:
+                                exclude:
+                                  type: string
                                 jsonnet:
                                   description: ApplicationSourceJsonnet holds jsonnet specific options
                                   properties:
@@ -1012,6 +1059,9 @@ spec:
                                 values:
                                   description: Values is Helm values, typically defined as a block
                                   type: string
+                                version:
+                                  description: Version is the Helm version to use for templating with
+                                  type: string
                               type: object
                             ksonnet:
                               description: Ksonnet holds ksonnet specific options
@@ -1039,6 +1089,11 @@ spec:
                             kustomize:
                               description: Kustomize holds kustomize specific options
                               properties:
+                                commonAnnotations:
+                                  additionalProperties:
+                                    type: string
+                                  description: CommonAnnotations adds additional kustomize commonAnnotations
+                                  type: object
                                 commonLabels:
                                   additionalProperties:
                                     type: string
@@ -1100,7 +1155,7 @@ spec:
                           description: SyncStrategy describes how to perform the sync
                           properties:
                             apply:
-                              description: Apply wil perform a `kubectl apply` to perform the sync.
+                              description: Apply will perform a `kubectl apply` to perform the sync.
                               properties:
                                 force:
                                   description: Force indicates whether or not to supply the --force flag to `kubectl apply`. The --force flag deletes and re-create the resource, when PATCH encounters conflict and has retried for 5 times.
@@ -1180,6 +1235,8 @@ spec:
                         directory:
                           description: Directory holds path/directory specific options
                           properties:
+                            exclude:
+                              type: string
                             jsonnet:
                               description: ApplicationSourceJsonnet holds jsonnet specific options
                               properties:
@@ -1267,6 +1324,9 @@ spec:
                             values:
                               description: Values is Helm values, typically defined as a block
                               type: string
+                            version:
+                              description: Version is the Helm version to use for templating with
+                              type: string
                           type: object
                         ksonnet:
                           description: Ksonnet holds ksonnet specific options
@@ -1294,6 +1354,11 @@ spec:
                         kustomize:
                           description: Kustomize holds kustomize specific options
                           properties:
+                            commonAnnotations:
+                              additionalProperties:
+                                type: string
+                              description: CommonAnnotations adds additional kustomize commonAnnotations
+                              type: object
                             commonLabels:
                               additionalProperties:
                                 type: string
@@ -1432,6 +1497,8 @@ spec:
                         directory:
                           description: Directory holds path/directory specific options
                           properties:
+                            exclude:
+                              type: string
                             jsonnet:
                               description: ApplicationSourceJsonnet holds jsonnet specific options
                               properties:
@@ -1519,6 +1586,9 @@ spec:
                             values:
                               description: Values is Helm values, typically defined as a block
                               type: string
+                            version:
+                              description: Version is the Helm version to use for templating with
+                              type: string
                           type: object
                         ksonnet:
                           description: Ksonnet holds ksonnet specific options
@@ -1546,6 +1616,11 @@ spec:
                         kustomize:
                           description: Kustomize holds kustomize specific options
                           properties:
+                            commonAnnotations:
+                              additionalProperties:
+                                type: string
+                              description: CommonAnnotations adds additional kustomize commonAnnotations
+                              type: object
                             commonLabels:
                               additionalProperties:
                                 type: string

@@ -3,11 +3,10 @@ kind: APIService
 metadata:
   labels:
     app: metrics-server
-    chart: metrics-server-2.11.1
+    chart: metrics-server-2.12.0
     heritage: Tiller
     release: metrics-server
   name: v1beta1.metrics.k8s.io
-  namespace: syn-metrics-server
 spec:
   group: metrics.k8s.io
   groupPriorityMinimum: 100

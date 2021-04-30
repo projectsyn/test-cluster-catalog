@@ -5,7 +5,7 @@ metadata:
     helm.sh/hook: test-success
   labels:
     app: metrics-server
-    chart: metrics-server-2.11.1
+    chart: metrics-server-2.12.0
     heritage: Tiller
     release: metrics-server
   name: metrics-server-test
@@ -13,9 +13,10 @@ spec:
   containers:
     - args:
         - -c
-        - wget -qO- https://metrics-server:443/version | grep -F v0.3.2
+        - wget -qO- https://metrics-server:443/version | grep -F v0.3.7
       command:
         - /bin/sh
-      image: busybox
+      image: busybox:latest
+      imagePullPolicy: IfNotPresent
       name: wget
   restartPolicy: Never

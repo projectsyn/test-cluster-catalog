@@ -16,14 +16,35 @@ spec:
       labels:
         app.kubernetes.io/name: argocd-server
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: argocd-server
+                topologyKey: kubernetes.io/hostname
+              weight: 100
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/part-of: argocd
+                topologyKey: kubernetes.io/hostname
+              weight: 5
       containers:
         - command:
             - argocd-server
             - --staticassets
             - /shared/app
             - --insecure
-          image: docker.io/argoproj/argocd:v1.7.4@sha256:d8a356b76d8b1bd810c9381f88ec0ae8cc71ad0ec2e22910a47f5c56417a40d0
+          image: docker.io/argoproj/argocd:v1.8.7@sha256:ce34acd7bac34d5a4fdbf96faf11fa5e01a7f96a27041d4472ca498886000cbf
           imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /healthz?full=true
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 30
           name: argocd-server
           ports:
             - containerPort: 8080
