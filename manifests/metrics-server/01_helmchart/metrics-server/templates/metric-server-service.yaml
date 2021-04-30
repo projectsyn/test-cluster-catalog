@@ -8,7 +8,7 @@ metadata:
     heritage: Tiller
     release: metrics-server
   name: metrics-server
-  namespace: syn-metrics-server
+  namespace: syn-metrics-server-test
 spec:
   ports:
     - port: 443

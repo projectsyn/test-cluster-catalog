@@ -13,6 +13,6 @@ spec:
   insecureSkipTLSVerify: true
   service:
     name: metrics-server
-    namespace: syn-metrics-server
+    namespace: syn-metrics-server-test
   version: v1beta1
   versionPriority: 100
