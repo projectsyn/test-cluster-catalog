@@ -4,7 +4,7 @@ metadata:
   labels:
     app: metrics-server
     chart: metrics-server-2.12.0
-    heritage: Tiller
+    heritage: Helm
     release: metrics-server
   name: metrics-server:system:auth-delegator
 roleRef:
