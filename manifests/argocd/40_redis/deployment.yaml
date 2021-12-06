@@ -37,7 +37,7 @@ spec:
             - ''
             - --appendonly
             - 'no'
-          image: docker.io/library/redis:5.0.9@sha256:ab3998e18bfaa570fad08c884ffbcc7861f59caf736a5a0c1ad5383c4d863958
+          image: docker.io/redis:5.0.9@sha256:ab3998e18bfaa570fad08c884ffbcc7861f59caf736a5a0c1ad5383c4d863958
           imagePullPolicy: IfNotPresent
           name: redis
           ports:
